@@ -94,10 +94,10 @@ Jedes Dokument bekommt diese Metadaten:
 
 Hier dokumentieren wir den Fortschritt:
 
-- [ ] Schritt 1: Projektstruktur + Config
-- [ ] Schritt 2: Pydantic Schemas
-- [ ] Schritt 3: Beispiel-Daten
-- [ ] Schritt 4: FastAPI Grundgerüst
+- [x] Schritt 1: Projektstruktur + Config
+- [x] Schritt 2: Pydantic Schemas
+- [x] Schritt 3: Beispiel-Daten
+- [x] Schritt 4: FastAPI Grundgerüst
 - [ ] Schritt 5: Document Loader + Chunking
 - [ ] Schritt 6: Embeddings + ChromaDB
 - [ ] Schritt 7: Metadata Filter
