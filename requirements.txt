@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+langchain
+langchain-community
+chromadb
+pydantic
+pydantic-settings
+python-multipart
+pypdf
+streamlit
+httpx
+pandas
+pytest
