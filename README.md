@@ -1,8 +1,8 @@
-# VoltCheck – EV Gebrauchtwagen-Berater
+# EV-Scan – EV Gebrauchtwagen-Berater
 
 KI-gestützter Kaufberater für gebrauchte Elektroautos im DACH-Raum.
 
-## Was macht VoltCheck?
+## Was macht EV-Scan?
 
 Du gibst **Modell, Baujahr und Kilometerstand** ein und bekommst einen Report mit:
 - Bekannte Rückrufe und Schwachstellen

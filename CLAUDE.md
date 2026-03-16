@@ -1,5 +1,5 @@
 # CLAUDE.md
-# Projekt: VoltCheck – EV Gebrauchtwagen-Berater
+# Projekt: EV-Scan – EV Gebrauchtwagen-Berater
 
 KI-gestützter Kaufberater für gebrauchte Elektroautos im DACH-Raum.
 User gibt Modell, Baujahr und Kilometerstand ein, bekommt einen Report mit
@@ -26,7 +26,7 @@ Rückrufen, Schwachstellen, Risikobewertung und Besichtigungs-Checkliste.
 ## Projektstruktur
 
 ```
-voltcheck/
+ev-scan/
 ├── app/
 │   ├── main.py              # FastAPI App
 │   ├── config.py            # Pydantic Settings
