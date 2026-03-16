@@ -1,7 +1,5 @@
 fastapi
 uvicorn
-langchain
-langchain-community
 chromadb
 pydantic
 pydantic-settings
