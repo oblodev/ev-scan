@@ -1,0 +1,32 @@
+# Schwachstellenanalyse: Hyundai Ioniq 5
+
+## Elektrisches System und ICCU
+
+Die groesste Schwachstelle des Ioniq 5 war die Integrated Charging Control Unit (ICCU) bei Baujahren 2021-2022. Dieses Bauteil steuert sowohl das DC-Laden als auch die Versorgung der 12V-Batterie. Bei einem Defekt konnte das Fahrzeug waehrend der Fahrt die Antriebsleistung verlieren. Hyundai hat einen umfangreichen Rueckruf durchgefuehrt und die ICCU bei betroffenen Fahrzeugen kostenlos getauscht. Beim Gebrauchtkauf unbedingt pruefen, ob der Rueckruf durchgefuehrt wurde.
+
+Die 12V-Batterie kann sich bei laengerem Stehen entladen, besonders wenn das Fahrzeug nicht an einer Ladestation haengt. Hyundai hat per Software-Update die Ladelogik verbessert, sodass die Hochvolt-Batterie die 12V-Batterie besser nachlaed.
+
+## Batterie und Laden
+
+Die 800V-Architektur ist eine der grossen Staerken des Ioniq 5 und ermoeglicht Ladegeschwindigkeiten von 10-80% in ca. 18 Minuten an einer 350kW-Saeule. Allerdings erreichen nicht alle Ladestationen die volle 800V-Spannung. An 400V-Saeulen nutzt der Ioniq 5 einen internen Spannungswandler, was die Ladeleistung etwas reduziert.
+
+Bei fruehen Modellen (2021) gab es Berichte ueber inkonsistente Reichweitenanzeigen und unerwartete Schwankungen des State of Charge (SoC). Software-Updates haben dies weitgehend behoben. Der reale Verbrauch liegt bei ca. 18-22 kWh/100km, je nach Fahrweise und Witterung.
+
+## Komfort und Verarbeitung
+
+Die Windgeraeusche bei hohen Geschwindigkeiten (ab ca. 130 km/h) sind eine bekannte Schwaeche, bedingt durch das kantige Retro-Design mit grossen Glasflaechen. Die A-Saeulen und Aussenspiegel erzeugen merkliche Verwirbelungen.
+
+Das Infotainment-System reagiert besonders beim Kaltstart traege. Die Anbindung von Android Auto und Apple CarPlay kann verzoegert starten. Software-Updates haben die Performance verbessert, aber das System ist im Vergleich zu Tesla oder Polestar immer noch langsamer.
+
+Die Materialqualitaet im Innenraum ist insgesamt gut, mit nachhaltigen Materialien (recycelte PET-Flaschen fuer Sitzbezuege). Allerdings neigen die hellen Innenraumfarben zu Verschmutzung.
+
+## Fahrwerk
+
+Das Fahrwerk ist komfortabel abgestimmt, was auf langen Strecken angenehm ist. In schnell gefahrenen Kurven neigt das Fahrzeug jedoch zu deutlicher Seitenneigung, was sportlich orientierte Fahrer stoeren kann. Die Lenkung ist relativ leichtgaengig und bietet wenig Rueckmeldung.
+
+## Quellen
+- ADAC Pannenstatistik 2023/2024
+- KBA Rueckrufdatenbank
+- OEAMTC Elektroauto-Test 2023
+- Hyundai Motor Deutschland Rueckrufaktionen
+- GoingElectric Forum Erfahrungsberichte

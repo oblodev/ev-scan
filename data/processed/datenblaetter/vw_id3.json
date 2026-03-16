@@ -1,0 +1,74 @@
+{
+  "modell": "VW ID.3",
+  "hersteller": "Volkswagen",
+  "bauzeit": "2020-heute",
+  "fahrzeugklasse": "Kompaktwagen",
+  "technische_daten": {
+    "batterie_optionen": [
+      {
+        "bezeichnung": "Pure / Pure Performance",
+        "kapazitaet_kwh": 58,
+        "reichweite_wltp_km": 426,
+        "zellchemie": "NMC"
+      },
+      {
+        "bezeichnung": "Pro / Pro Performance",
+        "kapazitaet_kwh": 77,
+        "reichweite_wltp_km": 549,
+        "zellchemie": "NMC"
+      }
+    ],
+    "ladeanschluss": "CCS2 (Typ 2 Combo)",
+    "max_dc_ladeleistung_kw": 170,
+    "max_ac_ladeleistung_kw": 11,
+    "antrieb": "Hinterrad",
+    "beschleunigung_0_100": "7.3s (Pro Performance) / 7.9s (Pure)",
+    "hoechstgeschwindigkeit_kmh": 160
+  },
+  "bekannte_probleme": [
+    {
+      "problem": "Software-Probleme und Bugs",
+      "beschreibung": "Die erste Generation (2020-2021) wurde mit unfertiger Software ausgeliefert. Probleme: Rueckfahrkamera fiel aus, Infotainment fror ein, Klimaanlage liess sich nicht bedienen, Head-Up-Display zeigte Fehler. VW hat ueber mehrere grosse Updates (Software 3.x) nachgebessert, aber fruehere Versionen sind teilweise noch im Umlauf.",
+      "schwere": "hoch",
+      "haeufigkeit": "haeufig"
+    },
+    {
+      "problem": "Schlechte Ladekurve",
+      "beschreibung": "Die DC-Ladeleistung faellt schon bei niedrigem SoC stark ab. Selbst an 150kW-Saeule wird die Maximalleistung von 170kW nur kurz gehalten. Von 10-80% braucht der ID.3 ca. 35 Minuten, deutlich langsamer als Konkurrenten mit 800V-Technik.",
+      "schwere": "mittel",
+      "haeufigkeit": "haeufig"
+    },
+    {
+      "problem": "Touch-Slider fuer Klimaanlage und Lautstaerke",
+      "beschreibung": "Die kapazitiven Touch-Slider unter dem Bildschirm fuer Temperatur und Lautstaerke sind ungenau, reagieren verzoegert und lassen sich beim Fahren kaum blind bedienen. Einer der meistkritisierten Aspekte des ID.3.",
+      "schwere": "mittel",
+      "haeufigkeit": "haeufig"
+    },
+    {
+      "problem": "Verarbeitungsqualitaet Innenraum",
+      "beschreibung": "Viel Hartplastik im Innenraum, besonders im unteren Bereich. Die Materialqualitaet entspricht nicht dem, was man von VW in dieser Preisklasse erwartet. Klappergeraeusche an Armaturenbrett und Tueren bei schlechter Strasse.",
+      "schwere": "niedrig",
+      "haeufigkeit": "haeufig"
+    },
+    {
+      "problem": "ID.Light Kommunikation unklar",
+      "beschreibung": "Die LED-Leiste (ID.Light) unter der Windschutzscheibe soll Navigationshinweise und Warnungen anzeigen, ist aber in der Praxis oft schwer zu interpretieren und wird von vielen Fahrern ignoriert.",
+      "schwere": "niedrig",
+      "haeufigkeit": "gelegentlich"
+    },
+    {
+      "problem": "Reduzierte Reichweite im Winter",
+      "beschreibung": "Die Waermepumpe arbeitet bei sehr niedrigen Temperaturen (unter -5 Grad) nicht optimal. Die Reichweite kann im Winter um 30-40% sinken, mehr als bei manchen Konkurrenten. Spaetere Modelle (ab 2023) haben eine verbesserte Waermepumpe.",
+      "schwere": "mittel",
+      "haeufigkeit": "gelegentlich"
+    }
+  ],
+  "staerken": [
+    "Kompakte Groesse (4.26m) bei grosszuegigem Innenraum, ideal fuer die Stadt und gut als Familienauto",
+    "Guter Wendekreis von nur 10.2m dank Hinterradantrieb, sehr wendig im Stadtverkehr",
+    "Breites VW-Haendler- und Servicenetz in DACH, kurze Wege zur Werkstatt",
+    "Solide Sicherheitsausstattung mit 5 Sternen im Euro NCAP Crashtest",
+    "Preislich attraktiver Einstieg in die Elektromobilitaet, besonders als Gebrauchtwagen mit starkem Wertverlust"
+  ],
+  "empfehlung_gebrauchtkauf": "Beim ID.3 Gebrauchtkauf ist die Software-Version entscheidend: Mindestens Software 3.0 sollte installiert sein, besser 3.5 oder hoeher. Fruehere Versionen haben massive Bugs. Unbedingt eine ausfuehrliche Probefahrt machen und dabei Infotainment, Klimabedienung und Rueckfahrkamera testen. Die 77kWh-Variante (Pro) lohnt sich fuer Langstreckenfahrer, fuer reine Stadtnutzung reicht die 58kWh-Version. Achtung beim Preis: Der ID.3 hat einen starken Wertverlust, was ihn als Gebrauchten attraktiv macht, aber auch ein Risiko beim Wiederverkauf darstellt."
+}

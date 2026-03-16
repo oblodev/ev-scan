@@ -1,0 +1,25 @@
+# KBA Rückrufaktionen: Tesla Model 3
+
+--- Rückruf ---
+Hersteller: Tesla
+Modell: Model 3
+Bauzeitraum: 2019-2021
+Referenznummer: KBA 010971
+Mangel: Die Verbindung zwischen dem oberen Querlenker und der Achsschenkelaufnahme an der Hinterachse kann sich lösen. Betroffen sind Fahrzeuge aus dem Werk Fremont. Die Schraubverbindung wurde mit unzureichendem Drehmoment angezogen, was bei Belastung zum Lösen der Verbindung führen kann.
+Abhilfe: Überprüfung und Nachziehen der Schraubverbindung an der Hinterachse mit korrektem Drehmoment in einer Tesla-Servicewerkstatt. Die Reparatur dauert ca. 1 Stunde und ist kostenlos.
+
+--- Rückruf ---
+Hersteller: Tesla
+Modell: Model 3
+Bauzeitraum: 2020-2023
+Referenznummer: KBA 012487
+Mangel: Der Touchscreen (Media Control Unit, MCU) kann während der Fahrt ausfallen. Betroffen ist die eMMC-Speicherkarte, die durch übermäßige Schreibzyklen vorzeitig verschleißt. Bei Ausfall sind Rückfahrkamera, Blinkeranzeige, Klimabedienung und Geschwindigkeitsanzeige nicht mehr sichtbar.
+Abhilfe: Tesla führt ein Software-Update durch, das die Schreibzyklen auf der eMMC reduziert. Bei bereits verschlissenen Einheiten wird die MCU kostenlos getauscht.
+
+--- Rückruf ---
+Hersteller: Tesla
+Modell: Model 3
+Bauzeitraum: 2017-2023
+Referenznummer: KBA 013215
+Mangel: Fehlerhafte Verriegelung der Motorhaube. Die Fronthaube kann sich während der Fahrt öffnen, wenn die Sekundärverriegelung nicht korrekt einrastet. Tritt besonders nach Servicearbeiten im Frontbereich auf.
+Abhilfe: Prüfung und ggf. Austausch der Haubenschloss-Baugruppe. Software-Update zur Erkennung einer nicht korrekt geschlossenen Haube mit Warnung im Display.

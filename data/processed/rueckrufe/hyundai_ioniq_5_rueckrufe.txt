@@ -1,0 +1,25 @@
+# KBA Rückrufaktionen: Hyundai Ioniq 5
+
+--- Rückruf ---
+Hersteller: Hyundai
+Modell: Ioniq 5
+Bauzeitraum: 2021-2022
+Referenznummer: KBA 012156
+Mangel: Fehlerhafte Integrated Charging Control Unit (ICCU). Das Bauteil steuert sowohl das DC-Laden als auch die Versorgung der 12V-Batterie. Bei einem Defekt kann das Fahrzeug während der Fahrt die Antriebsleistung verlieren oder nicht mehr gestartet werden. In seltenen Fällen kann ein Kurzschluss in der ICCU zu einem Fahrzeugbrand führen.
+Abhilfe: Austausch der ICCU durch eine überarbeitete Version mit verbesserter Firmware. Zusätzlich wird ein Software-Update für das Battery Management System (BMS) aufgespielt, das eine frühzeitige Fehlererkennung ermöglicht. Die Reparatur dauert ca. 3 Stunden und ist kostenlos.
+
+--- Rückruf ---
+Hersteller: Hyundai
+Modell: Ioniq 5
+Bauzeitraum: 2021-2023
+Referenznummer: KBA 012834
+Mangel: Die Hochvolt-Batterie kann in bestimmten Situationen nicht korrekt von der Leistungselektronik getrennt werden. Betrifft den Pyro-Sicherungsmechanismus, der bei einem Unfall die Batterie vom Hochvoltsystem trennen soll. Bei fehlerhafter Auslösung könnte die Batterie unter Spannung bleiben.
+Abhilfe: Überprüfung und ggf. Austausch des Pyro-Sicherungsmoduls. Software-Update zur verbesserten Überwachung des Sicherungssystems.
+
+--- Rückruf ---
+Hersteller: Hyundai
+Modell: Ioniq 5
+Bauzeitraum: 2022-2023
+Referenznummer: KBA 013102
+Mangel: Möglicher Ausfall der elektrischen Parkbremse. Ein fehlerhaftes Steuergerät kann dazu führen, dass die Parkbremse nicht korrekt angezogen wird oder sich während der Fahrt ungewollt aktiviert.
+Abhilfe: Software-Update für das Parkbremsen-Steuergerät. Bei betroffenen Einheiten zusätzlich Hardware-Tausch des Aktuators.

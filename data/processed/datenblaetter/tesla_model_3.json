@@ -1,0 +1,86 @@
+{
+  "modell": "Tesla Model 3",
+  "hersteller": "Tesla",
+  "bauzeit": "2019-heute",
+  "fahrzeugklasse": "Mittelklasse-Limousine",
+  "technische_daten": {
+    "batterie_optionen": [
+      {
+        "bezeichnung": "Standard Range Plus / Standard",
+        "kapazitaet_kwh": 60,
+        "reichweite_wltp_km": 491,
+        "zellchemie": "LFP (ab 2021)"
+      },
+      {
+        "bezeichnung": "Long Range",
+        "kapazitaet_kwh": 82,
+        "reichweite_wltp_km": 602,
+        "zellchemie": "NMC"
+      },
+      {
+        "bezeichnung": "Performance",
+        "kapazitaet_kwh": 82,
+        "reichweite_wltp_km": 547,
+        "zellchemie": "NMC"
+      }
+    ],
+    "ladeanschluss": "CCS2 (Typ 2 Combo)",
+    "max_dc_ladeleistung_kw": 250,
+    "max_ac_ladeleistung_kw": 11,
+    "antrieb": "Hinterrad (Standard) / Allrad (Long Range, Performance)",
+    "beschleunigung_0_100": "3.3s (Performance) / 4.4s (Long Range) / 6.1s (Standard)",
+    "hoechstgeschwindigkeit_kmh": 261
+  },
+  "bekannte_probleme": [
+    {
+      "problem": "Verarbeitungsqualitaet",
+      "beschreibung": "Ungleichmaessige Spaltmasse an Tueren, Kofferraum und Motorhaube. Besonders bei Baujahren 2019-2020 aus Fremont-Produktion haeufig. Spaetere Modelle aus Shanghai (ab 2021) deutlich besser.",
+      "schwere": "mittel",
+      "haeufigkeit": "haeufig"
+    },
+    {
+      "problem": "12V-Batterie Ausfall",
+      "beschreibung": "Die kleine 12V-Blei-Batterie fuer die Bordelektronik faellt unerwartet aus, meist nach 2-3 Jahren. Fuehrt dazu, dass das Auto nicht mehr gestartet werden kann. Tesla hat ab 2021 auf eine Li-Ion 12V-Batterie umgestellt, die langlebiger ist.",
+      "schwere": "hoch",
+      "haeufigkeit": "gelegentlich"
+    },
+    {
+      "problem": "Bremsrost an Bremsscheiben",
+      "beschreibung": "Durch die starke Rekuperation werden die mechanischen Bremsen selten genutzt. Die Bremsscheiben rosten, besonders im Winter. Fuehrt zu Vibrationen und schlechter Bremsleistung beim ersten starken Bremsen. Regelmaessiges aktives Bremsen ist empfehlenswert.",
+      "schwere": "mittel",
+      "haeufigkeit": "haeufig"
+    },
+    {
+      "problem": "Phantombremsungen",
+      "beschreibung": "Das Fahrzeug bremst auf Autobahnen oder Landstrassen ploetzlich ohne erkennbaren Grund. Ausgeloest durch Fehlinterpretationen der Kamera-basierten Fahrassistenz. Tritt besonders bei Bruecken, Schildern und Schattenwurf auf. Durch Software-Updates teilweise verbessert.",
+      "schwere": "hoch",
+      "haeufigkeit": "gelegentlich"
+    },
+    {
+      "problem": "Touchscreen als einzige Bedienung",
+      "beschreibung": "Fast alle Fahrzeugfunktionen laufen ueber den zentralen 15-Zoll-Touchscreen. Scheibenwischer, Spiegel, Handschuhfach - alles nur ueber das Display. Lenkt beim Fahren ab und ist bei Displayausfall problematisch.",
+      "schwere": "mittel",
+      "haeufigkeit": "haeufig"
+    },
+    {
+      "problem": "Fahrwerk und Daempfer",
+      "beschreibung": "Besonders bei Modellen vor dem Facelift (vor 2024) klagen Fahrer ueber ein poltriges Fahrwerk auf schlechten Strassen. Die Daempfer sind relativ hart abgestimmt. Nachruest-Fahrwerke von Drittanbietern koennen Abhilfe schaffen.",
+      "schwere": "niedrig",
+      "haeufigkeit": "gelegentlich"
+    },
+    {
+      "problem": "Lackqualitaet",
+      "beschreibung": "Der Lack ist relativ duenn und empfindlich gegenueber Steinschlaegen. Besonders an der Frontstossstange und den vorderen Kotfluegeln. Eine Lackschutzfolie (PPF) wird von vielen Besitzern nachgeruestet.",
+      "schwere": "niedrig",
+      "haeufigkeit": "haeufig"
+    }
+  ],
+  "staerken": [
+    "Exzellentes Supercharger-Netzwerk mit ueber 60.000 Ladepunkten weltweit, sehr zuverlaessig und schnell",
+    "Sehr gute Energieeffizienz (ca. 14-16 kWh/100km), eine der sparsamsten Limousinen am Markt",
+    "Regelmaessige OTA-Updates (Over-the-Air) bringen neue Funktionen und Verbesserungen ohne Werkstattbesuch",
+    "Hoher Wiederverkaufswert im Vergleich zu anderen E-Autos, stabile Nachfrage auf dem Gebrauchtmarkt",
+    "Sehr gute Beschleunigung und Fahrdynamik, niedriger Schwerpunkt durch Unterfluerbatterie"
+  ],
+  "empfehlung_gebrauchtkauf": "Beim Gebrauchtkauf eines Tesla Model 3 unbedingt auf die Produktionsstaette achten: Modelle ab 2021 aus Shanghai (erkennbar am VIN-Prefix LRW) haben deutlich bessere Verarbeitungsqualitaet als fruehe Fremont-Modelle. Die 12V-Batterie pruefen lassen und nach Tauschhistorie fragen. Bremsscheiben auf Rost kontrollieren, besonders wenn das Fahrzeug viel in der Stadt gefahren wurde. Ein Blick ins Service-Protokoll der Tesla-App zeigt, ob alle Software-Updates eingespielt wurden."
+}

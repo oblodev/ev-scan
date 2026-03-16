@@ -1,0 +1,69 @@
+{
+  "modell": "Hyundai Ioniq 5",
+  "hersteller": "Hyundai",
+  "bauzeit": "2021-heute",
+  "fahrzeugklasse": "Kompakt-SUV / Crossover",
+  "technische_daten": {
+    "batterie_optionen": [
+      {
+        "bezeichnung": "Standard Range",
+        "kapazitaet_kwh": 58,
+        "reichweite_wltp_km": 384,
+        "zellchemie": "NMC"
+      },
+      {
+        "bezeichnung": "Long Range",
+        "kapazitaet_kwh": 77.4,
+        "reichweite_wltp_km": 507,
+        "zellchemie": "NMC"
+      }
+    ],
+    "ladeanschluss": "CCS2 (Typ 2 Combo)",
+    "max_dc_ladeleistung_kw": 240,
+    "max_ac_ladeleistung_kw": 11,
+    "antrieb": "Hinterrad (Standard) / Allrad (optional)",
+    "beschleunigung_0_100": "5.2s (AWD Long Range) / 7.4s (RWD Standard)",
+    "hoechstgeschwindigkeit_kmh": 185,
+    "besonderheit": "800V-Architektur, Vehicle-to-Load (V2L) mit 3.6 kW Ausgangsleistung"
+  },
+  "bekannte_probleme": [
+    {
+      "problem": "Elektrische 12V-Batterie Entladung",
+      "beschreibung": "Aehnlich wie bei anderen E-Autos kann die 12V-Batterie unerwartet leer sein, besonders wenn das Fahrzeug laenger steht. Hyundai hat per Software-Update die Ladelogik verbessert. Trotzdem bei Gebrauchtkauf pruefen.",
+      "schwere": "mittel",
+      "haeufigkeit": "gelegentlich"
+    },
+    {
+      "problem": "Batterie-Management-System (BMS) Probleme",
+      "beschreibung": "Bei fruehen Modellen (2021-2022) gab es Faelle von inkonsistenter Reichweitenanzeige und unerwarteten Ladestopps. Das BMS zeigte teilweise falsche SoC-Werte (State of Charge) an. Per Software-Update weitgehend behoben.",
+      "schwere": "mittel",
+      "haeufigkeit": "selten"
+    },
+    {
+      "problem": "Hochvolt-Batterie Rueckruf (ICCU)",
+      "beschreibung": "Der Integrated Charging Control Unit (ICCU) konnte in seltenen Faellen zu einem Leistungsverlust oder Liegenbleiben fuehren. Betrifft Baujahre 2021-2022. Hyundai hat einen grossen Rueckruf durchgefuehrt und die ICCU kostenlos getauscht.",
+      "schwere": "hoch",
+      "haeufigkeit": "selten"
+    },
+    {
+      "problem": "Windgeraeusche bei hohen Geschwindigkeiten",
+      "beschreibung": "Durch das kantige Retro-Design und die grossen Glasflaechen treten ab ca. 130 km/h merkliche Windgeraeusche auf, besonders an den A-Saeulen und Aussenspiegeln.",
+      "schwere": "niedrig",
+      "haeufigkeit": "haeufig"
+    },
+    {
+      "problem": "Infotainment-Verzoegerungen",
+      "beschreibung": "Das Infotainment-System reagiert teilweise traege, besonders beim Kaltstart oder bei Nutzung von Android Auto / Apple CarPlay. Software-Updates haben die Performance verbessert, aber nicht vollstaendig behoben.",
+      "schwere": "niedrig",
+      "haeufigkeit": "gelegentlich"
+    }
+  ],
+  "staerken": [
+    "800V-Architektur ermoeglicht extrem schnelles Laden: 10-80% in ca. 18 Minuten an 350kW-Saeule",
+    "Vehicle-to-Load (V2L): Das Auto kann als Steckdose genutzt werden, z.B. fuer Camping oder Notstrom (3.6 kW)",
+    "Sehr geraemiger Innenraum dank E-GMP Plattform mit flachem Boden, verschiebbare Mittelkonsole",
+    "5 Jahre Herstellergarantie, 8 Jahre / 160.000 km auf die Hochvolt-Batterie",
+    "Retro-futuristisches Design mit guter Aerodynamik (cW 0.288)"
+  ],
+  "empfehlung_gebrauchtkauf": "Beim Gebrauchtkauf unbedingt pruefen, ob der ICCU-Rueckruf bereits durchgefuehrt wurde (betrifft Baujahre 2021-2022). Den SoH (State of Health) der Batterie auslesen lassen, idealerweise ueber OBD2-Dongle mit der App 'EVNotify' oder beim Hyundai-Haendler. Die Long-Range-Variante mit 77.4 kWh ist fuer Langstrecke deutlich empfehlenswerter. Auf die Software-Version achten: Neuere Versionen verbessern Ladekurve, BMS und Infotainment erheblich."
+}

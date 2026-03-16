@@ -1,0 +1,46 @@
+# Schwachstellenanalyse: VW ID.3
+
+## Software - Das Kernproblem
+
+Die Software ist die mit Abstand groesste Schwachstelle des VW ID.3, besonders bei den ersten Baujahren (2020-2021). Volkswagen hat das Fahrzeug mit unfertiger Software ausgeliefert und versprochen, fehlende Funktionen per Update nachzuliefern. Die Realitaet war ernuechternd:
+
+- Infotainment-Abstuerze und Neustarts waehrend der Fahrt
+- Rueckfahrkamera funktionierte nicht oder zeigte schwarzes Bild
+- Klimaanlage liess sich ueber den Touchscreen nicht bedienen
+- Head-Up-Display zeigte falsche Geschwindigkeiten
+- App-Connect (Android Auto / Apple CarPlay) brach regelmaessig ab
+
+Volkswagen hat mit Software 3.0 (ab 2023) die meisten Probleme behoben. Fahrzeuge mit Software 2.x oder aelter haben aber immer noch viele der genannten Probleme. Beim Gebrauchtkauf ist die Software-Version der wichtigste Pruefpunkt.
+
+## Bedienkonzept
+
+Die kapazitiven Touch-Slider unterhalb des Bildschirms fuer Temperatur und Lautstaerke sind einer der meistkritisierten Aspekte des ID.3. Sie reagieren ungenau, verzoegert und lassen sich beim Fahren nicht blind bedienen. Das Lenkrad hat ebenfalls kapazitive Touchflaechen statt physischer Tasten, was bei vielen Fahrern auf Ablehnung stoesst.
+
+Der ADAC und Euro NCAP haben die Bedienung als ablenkend kritisiert. VW hat beim Facelift (ab 2024) teilweise wieder physische Tasten am Lenkrad eingefuehrt.
+
+## Ladeleistung
+
+Die DC-Ladeleistung ist mit maximal 170 kW auf dem Papier akzeptabel, in der Praxis aber enttaeuschend. Die Ladekurve faellt schnell ab, sodass die durchschnittliche Ladeleistung von 10-80% bei nur ca. 100 kW liegt. Im Vergleich: Der Hyundai Ioniq 5 mit 800V-Technik schafft die gleiche Ladung in der halben Zeit.
+
+An 50kW-Saeulen (z.B. Aldi, Lidl) funktioniert der ID.3 zuverlaessig. Probleme traten vereinzelt an Ionity-Schnellladestationen auf, wo der Ladevorgang abbrach.
+
+## Karosserie und Verarbeitung
+
+Der Innenraum ist gepraegt von Hartplastik, besonders im unteren Bereich der Tueren und des Armaturenbretts. Die Materialqualitaet liegt unter dem, was man von VW in der Kompaktklasse gewohnt ist (Vergleich: Golf 8). Klappergeraeusche an Armaturenbrett und Mittelkonsole sind bei hohem Kilometerstand dokumentiert.
+
+Die Aussenverarbeitung ist solide, die Spaltmasse sind gleichmaessig. Der Lack ist in normaler VW-Qualitaet und deutlich besser als beim Tesla Model 3.
+
+## Reichweite im Winter
+
+Die Waermepumpe des ID.3 arbeitet bei sehr niedrigen Temperaturen (unter -5 Grad Celsius) nicht optimal. Die Reichweite kann im Winter um 30-40% sinken. Der OEAMTC hat im Wintertest 2022 eine reale Reichweite von nur ca. 260 km fuer die 77kWh-Variante gemessen (statt 549 km WLTP). Spaetere Modelle (ab 2023) haben eine verbesserte Waermepumpe mit groesserem Arbeitsbereich.
+
+## 12V-Bordnetz
+
+Ein fehlerhafter Kabelbaum im Bereich der A-Saeule kann bei Feuchtigkeit zu Kurzschluessen fuehren. VW hat einen Rueckruf fuer betroffene Fahrzeuge durchgefuehrt. Bei der Besichtigung auf Wassereintrittsspuren im Bereich der A-Saeule achten.
+
+## Quellen
+- ADAC Pannenstatistik 2023/2024
+- KBA Rueckrufdatenbank
+- OEAMTC Wintertest E-Autos 2022
+- Auto Bild Dauertest VW ID.3 (2023)
+- GoingElectric Forum Erfahrungsberichte

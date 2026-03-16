@@ -1,0 +1,25 @@
+# KBA Rückrufaktionen: VW ID.3
+
+--- Rückruf ---
+Hersteller: Volkswagen
+Modell: ID.3
+Bauzeitraum: 2020-2021
+Referenznummer: KBA 011823
+Mangel: Die Software des Infotainmentsystems kann während der Fahrt abstürzen und einen Neustart erfordern. Während des Neustarts (ca. 30-60 Sekunden) sind Rückfahrkamera, Navigationsanweisungen, Geschwindigkeitsanzeige und Klimabedienung nicht verfügbar. Betrifft Fahrzeuge mit Software-Version vor 2.4.
+Abhilfe: Software-Update auf Version 3.0 oder höher in einer VW-Werkstatt. Das Update behebt die Speicherleck-Problematik, die zum Absturz führte. Dauer ca. 2-4 Stunden.
+
+--- Rückruf ---
+Hersteller: Volkswagen
+Modell: ID.3
+Bauzeitraum: 2020-2022
+Referenznummer: KBA 012298
+Mangel: Möglicher Kurzschluss im 12V-Bordnetz. Ein fehlerhafter Kabelbaum im Bereich der A-Säule kann bei Feuchtigkeit einen Kurzschluss verursachen. Dies kann zum Ausfall verschiedener Steuergeräte und im schlimmsten Fall zum Liegenbleiben führen. Betrifft Fahrzeuge aus dem Werk Zwickau mit bestimmten Produktionsdaten.
+Abhilfe: Überprüfung des Kabelbaums und ggf. Austausch oder zusätzliche Abdichtung der betroffenen Stelle. Kostenlose Reparatur in ca. 2 Stunden.
+
+--- Rückruf ---
+Hersteller: Volkswagen
+Modell: ID.3
+Bauzeitraum: 2020-2023
+Referenznummer: KBA 013445
+Mangel: Fehlerhafte Darstellung der Geschwindigkeit im Head-Up-Display. In seltenen Fällen zeigt das HUD eine um bis zu 10 km/h abweichende Geschwindigkeit an. Das Kombiinstrument hinter dem Lenkrad zeigt weiterhin die korrekte Geschwindigkeit.
+Abhilfe: Software-Update zur Kalibrierung des Head-Up-Displays. Wird im Rahmen eines regulären Werkstattbesuchs kostenlos durchgeführt.

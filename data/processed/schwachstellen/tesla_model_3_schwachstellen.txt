@@ -1,0 +1,31 @@
+# Schwachstellenanalyse: Tesla Model 3
+
+## Karosserie und Verarbeitung
+
+Das Tesla Model 3 ist bekannt fuer schwankende Verarbeitungsqualitaet, besonders bei fruehen Baujahren aus dem Werk Fremont (USA). Ungleichmaessige Spaltmasse an Tueren, Kofferraum und Motorhaube sind haeufig dokumentiert. Der ADAC und diverse Fachmagazine haben dies in Tests bestaetigt. Modelle aus der Gigafactory Shanghai (ab 2021, erkennbar am VIN-Prefix "LRW") zeigen eine deutlich bessere Verarbeitung.
+
+Der Lack ist mit ca. 100-120 Mikrometer relativ duenn und empfindlich gegenueber Steinschlaegen. Viele Besitzer investieren in eine Lackschutzfolie (PPF) fuer Front und Schweller.
+
+## Antrieb und Batterie
+
+Die Hochvolt-Batterie ist grundsaetzlich zuverlaessig. Bei der LFP-Variante (Standard Range, ab 2021) sollte die Batterie regelmaessig auf 100% geladen werden, um die Zellbalancierung zu unterstuetzen. NMC-Batterien (Long Range, Performance) sollten dagegen nur bis 80-90% geladen werden.
+
+Die 12V-Batterie (Blei-Saeure bei Modellen vor 2021) ist eine bekannte Schwachstelle. Ausfaelle nach 2-3 Jahren sind dokumentiert. Tesla hat ab Mitte 2021 auf eine Li-Ion 12V-Batterie umgestellt, die deutlich langlebiger ist. Symptome eines bevorstehenden Ausfalls: Haeufige "12V Battery Warning" im Display.
+
+## Fahrwerk und Bremsen
+
+Durch die starke Rekuperation (One-Pedal-Driving) werden die mechanischen Bremsen selten genutzt. Die Bremsscheiben neigen dadurch zu Rostbildung, besonders im Winter. Der ADAC empfiehlt, regelmaessig aktiv zu bremsen, um die Scheiben blank zu halten. Bei der Besichtigung eines Gebrauchtwagens unbedingt die Bremsscheiben visuell pruefen.
+
+Die Fahrwerksabstimmung ist eher sportlich-hart. Auf schlechten Strassen kann das Fahrzeug unkomfortabel sein. Nachruest-Fahrwerke (z.B. KW, Bilstein) sind verfuegbar, aber teuer.
+
+## Software und Assistenzsysteme
+
+Phantombremsungen sind ein dokumentiertes Problem. Das Fahrzeug bremst auf Autobahnen oder Landstrassen ploetzlich ohne erkennbaren Grund. Ursache sind Fehlinterpretationen des kamerabasierten Assistenzsystems (Tesla Vision). Tesla hat durch Software-Updates Verbesserungen erzielt, das Problem ist aber nicht vollstaendig behoben.
+
+Der Touchscreen ist die einzige Bedienschnittstelle fuer fast alle Funktionen. Ein Displayausfall (selten, aber dokumentiert durch eMMC-Verschleiss) hat massive Auswirkungen auf die Bedienbarkeit.
+
+## Quellen
+- ADAC Pannenstatistik 2023/2024
+- KBA Rueckrufdatenbank
+- Tesla Motors Club Forum (deutschsprachig)
+- Auto Motor und Sport Dauertest Tesla Model 3 (2022)
