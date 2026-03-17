@@ -31,7 +31,11 @@ class Settings(BaseSettings):
 
     # === Vektor-Datenbank (ChromaDB) ===
 
-    # Host und Port des ChromaDB-Servers fuer die Vektorspeicherung
+    # Pfad zum lokalen ChromaDB-Speicher (persistent auf Festplatte)
+    # Im Entwicklungsmodus speichern wir lokal statt ueber einen Server
+    chroma_persist_dir: str = "./chroma_data"
+
+    # Host und Port des ChromaDB-Servers (fuer spaetere Docker-Nutzung)
     chroma_host: str = "localhost"
     chroma_port: int = 8000
 

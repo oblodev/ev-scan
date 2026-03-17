@@ -98,8 +98,8 @@ Hier dokumentieren wir den Fortschritt:
 - [x] Schritt 2: Pydantic Schemas
 - [x] Schritt 3: Beispiel-Daten
 - [x] Schritt 4: FastAPI Grundgerüst
-- [ ] Schritt 5: Document Loader + Chunking
-- [ ] Schritt 6: Embeddings + ChromaDB
+- [x] Schritt 5: Document Loader + Chunking
+- [x] Schritt 6: Embeddings + ChromaDB
 - [ ] Schritt 7: Metadata Filter
 - [ ] Schritt 8: RAG Chain
 - [ ] Schritt 9: Streamlit Frontend
