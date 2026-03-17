@@ -178,12 +178,17 @@ def _remove_unwanted_elements(soup: BeautifulSoup) -> None:
 
     # Schritt 2: Elemente mit verdaechtigen class/id entfernen
     for element in soup.find_all(True):
-        if not isinstance(element, Tag):
+        if element is None or not isinstance(element, Tag):
             continue
 
-        # class und id als String zusammenfuehren
-        classes = " ".join(element.get("class", []))
-        element_id = element.get("id", "")
+        # class gibt eine Liste zurueck, id einen String (oder None)
+        classes = element.get("class", [])
+        if isinstance(classes, list):
+            classes = " ".join(classes)
+        elif classes is None:
+            classes = ""
+
+        element_id = element.get("id") or ""
         combined = f"{classes} {element_id}"
 
         if REMOVE_PATTERNS.search(combined):
