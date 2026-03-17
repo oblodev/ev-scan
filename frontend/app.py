@@ -354,15 +354,21 @@ with tab_wissen:
             with st.spinner("Lade Seite..."):
                 url_result = extrahiere_url_text(url_input)
             if url_result:
-                st.session_state["url_extracted_text"] = url_result["extracted_text"]
-                st.session_state["url_title"] = url_result["title"]
+                # Text direkt in den Session State des Textfelds schreiben,
+                # damit er beim Rerun sofort im text_area erscheint.
+                # Streamlit ignoriert value= wenn der key schon existiert,
+                # daher muessen wir den key direkt setzen.
+                st.session_state["ingest_text"] = url_result["extracted_text"]
+                st.session_state["text_quelle"] = url_result["title"]
                 char_count = url_result["char_count"]
                 st.success(
                     f"Text extrahiert: \"{url_result['title']}\" "
-                    f"({char_count:,} Zeichen)"
+                    f"({char_count:,} Zeichen). "
+                    f"Scroll runter, waehle Kategorie + Modell, und klick 'Hinzufuegen'."
                 )
                 if char_count >= 50_000:
                     st.warning("Text wurde auf 50.000 Zeichen gekuerzt.")
+                st.rerun()
 
     st.divider()
 
@@ -373,13 +379,8 @@ with tab_wissen:
         "Der Text wird automatisch aufbereitet und in die Wissensbasis gespeichert."
     )
 
-    # Wenn Text per URL extrahiert wurde, diesen als Default anzeigen
-    default_text = st.session_state.get("url_extracted_text", "")
-    default_quelle = st.session_state.get("url_title", "")
-
     text_input = st.text_area(
         "Text",
-        value=default_text,
         height=200,
         placeholder="Mindestens 50 Zeichen. Z.B. einen Absatz aus einem Testbericht...",
         key="ingest_text",
@@ -413,7 +414,6 @@ with tab_wissen:
 
     text_quelle = st.text_input(
         "Quelle (optional)",
-        value=default_quelle,
         placeholder="z.B. ADAC Test 2024",
         key="text_quelle",
     )
