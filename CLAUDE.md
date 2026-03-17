@@ -105,4 +105,4 @@ Hier dokumentieren wir den Fortschritt:
 - [x] Schritt 9: Streamlit Frontend
 - [x] Schritt 10: Docker
 - [x] Schritt 11: Tests
-- [ ] Schritt 12: README
+- [x] Schritt 12: README
