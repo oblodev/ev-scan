@@ -145,6 +145,55 @@ class AnalyzeResponse(BaseModel):
     )
 
 
+# === Ingest/Knowledge-Management Modelle ===
+
+class IngestTextRequest(BaseModel):
+    """Anfrage zum Hinzufuegen von Text in die Wissensbasis."""
+    text: str = Field(
+        ...,
+        description="Der Text der hinzugefuegt werden soll",
+        min_length=50
+    )
+    kategorie: Literal[
+        "testbericht", "rueckruf", "schwachstelle", "datenblatt"
+    ] = Field(
+        ...,
+        description="Art des Dokuments"
+    )
+    modell: str = Field(
+        ...,
+        description="Fahrzeugmodell, z.B. 'Tesla Model 3'",
+        min_length=1
+    )
+    quelle: str = Field(
+        default="manuell",
+        description="Woher die Information stammt, z.B. 'ADAC Test 2024'"
+    )
+
+
+class IngestResponse(BaseModel):
+    """Antwort nach erfolgreichem Ingest."""
+    status: str = Field(..., description="'ok' bei Erfolg")
+    chunks_added: int = Field(..., description="Anzahl erstellter Chunks", ge=0)
+    filename: str = Field(
+        default="",
+        description="Dateiname bei File-Upload"
+    )
+
+
+class KnowledgeStats(BaseModel):
+    """Statistiken ueber die Wissensbasis."""
+    total_chunks: int = Field(..., description="Gesamtanzahl Chunks", ge=0)
+    models: dict = Field(
+        default_factory=dict,
+        description="Chunks pro Modell"
+    )
+    categories: dict = Field(
+        default_factory=dict,
+        description="Chunks pro Kategorie"
+    )
+
+
 class ModelInfo(BaseModel):
     """Info ueber ein Fahrzeugmodell in unserer Wissensbasis."""
     modell: str = Field(

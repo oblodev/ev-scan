@@ -18,6 +18,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.knowledge import router as knowledge_router
 from app.api.routes import router
 
 # Logging konfigurieren, damit wir sehen was passiert
@@ -82,6 +83,7 @@ app.add_middleware(
 # koennen wir einen neuen Router mit /api/v2 hinzufuegen,
 # ohne die alte Version kaputtzumachen.
 app.include_router(router, prefix="/api/v1")
+app.include_router(knowledge_router, prefix="/api/v1")
 
 
 @app.get("/")
