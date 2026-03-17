@@ -170,29 +170,54 @@ def _remove_unwanted_elements(soup: BeautifulSoup) -> None:
     Geht den HTML-Baum durch und entfernt:
     1. Tags die nie Content enthalten (script, style, nav, etc.)
     2. Elemente deren class oder id auf Werbung/Navigation hindeuten
-    """
-    # Schritt 1: Bekannte Nicht-Content-Tags entfernen
-    for tag_name in REMOVE_TAGS:
-        for element in soup.find_all(tag_name):
-            element.decompose()
 
-    # Schritt 2: Elemente mit verdaechtigen class/id entfernen
-    for element in soup.find_all(True):
+    WICHTIG: Immer erst sammeln, dann loeschen.
+    decompose() veraendert den DOM-Baum, sodass Referenzen in einer
+    Live-Iteration ungueltig werden und AttributeErrors ausloesen.
+    """
+    # Schritt 1: Bekannte Nicht-Content-Tags sammeln und entfernen
+    tags_to_remove: list[Tag] = []
+    for tag_name in REMOVE_TAGS:
+        tags_to_remove.extend(soup.find_all(tag_name))
+
+    for element in tags_to_remove:
+        try:
+            element.decompose()
+        except AttributeError:
+            pass
+
+    # Schritt 2: Elemente mit verdaechtigen class/id sammeln
+    # Wir schliessen strukturelle Top-Level-Tags aus (body, html, main, article),
+    # damit nicht versehentlich der gesamte Content geloescht wird
+    SKIP_TAGS = {"body", "html", "main", "article"}
+    to_remove: list[Tag] = []
+
+    for element in list(soup.find_all(True)):
         if element is None or not isinstance(element, Tag):
             continue
+        if element.name in SKIP_TAGS:
+            continue
 
-        # class gibt eine Liste zurueck, id einen String (oder None)
-        classes = element.get("class", [])
-        if isinstance(classes, list):
-            classes = " ".join(classes)
-        elif classes is None:
-            classes = ""
+        try:
+            classes = element.get("class", [])
+            if isinstance(classes, list):
+                classes = " ".join(classes)
+            elif classes is None:
+                classes = ""
 
-        element_id = element.get("id") or ""
-        combined = f"{classes} {element_id}"
+            element_id = element.get("id") or ""
+            combined = f"{classes} {element_id}"
 
-        if REMOVE_PATTERNS.search(combined):
+            if REMOVE_PATTERNS.search(combined):
+                to_remove.append(element)
+        except AttributeError:
+            continue
+
+    for element in to_remove:
+        try:
             element.decompose()
+        except AttributeError:
+            pass
 
 
 def _find_main_content(soup: BeautifulSoup) -> str:
