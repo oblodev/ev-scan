@@ -163,6 +163,29 @@ def sende_datei_ingest(
         return None
 
 
+def extrahiere_url_text(url: str) -> dict | None:
+    """Extrahiert Text aus einer URL ueber das Backend."""
+    try:
+        with httpx.Client(timeout=20.0) as client:
+            response = client.post(
+                f"{API_BASE_URL}/ingest/url",
+                json={"url": url},
+            )
+        if response.status_code == 200:
+            return response.json()
+        else:
+            # Fehlermeldung aus dem Backend anzeigen
+            detail = response.json().get("detail", response.text) if response.headers.get("content-type", "").startswith("application/json") else response.text
+            st.error(f"Fehler: {detail}")
+            return None
+    except httpx.ConnectError:
+        st.error("Backend nicht erreichbar.")
+        return None
+    except httpx.TimeoutException:
+        st.error("Timeout – die Seite braucht zu lange zum Laden.")
+        return None
+
+
 def loesche_modell(modell: str) -> bool:
     """Loescht alle Daten fuer ein Modell."""
     try:
@@ -309,15 +332,54 @@ with tab_wissen:
     modelle_wissen = lade_modelle()
     vorhandene_modelle = [m["modell"] for m in modelle_wissen] if modelle_wissen else []
 
+    # --- Bereich 0: Von URL importieren ---
+    st.subheader("Von URL importieren")
+    st.caption(
+        "Gib eine URL ein (z.B. ADAC-Artikel, CarWiki-Seite). "
+        "Der Text wird extrahiert und unten angezeigt – du kannst ihn pruefen und bearbeiten."
+    )
+
+    url_input = st.text_input(
+        "URL",
+        placeholder="https://www.adac.de/rund-ums-fahrzeug/...",
+        key="url_input",
+    )
+
+    if st.button("Text extrahieren", key="btn_url"):
+        if not url_input:
+            st.error("Bitte eine URL eingeben.")
+        elif not url_input.startswith(("http://", "https://")):
+            st.error("URL muss mit http:// oder https:// beginnen.")
+        else:
+            with st.spinner("Lade Seite..."):
+                url_result = extrahiere_url_text(url_input)
+            if url_result:
+                st.session_state["url_extracted_text"] = url_result["extracted_text"]
+                st.session_state["url_title"] = url_result["title"]
+                char_count = url_result["char_count"]
+                st.success(
+                    f"Text extrahiert: \"{url_result['title']}\" "
+                    f"({char_count:,} Zeichen)"
+                )
+                if char_count >= 50_000:
+                    st.warning("Text wurde auf 50.000 Zeichen gekuerzt.")
+
+    st.divider()
+
     # --- Bereich 1: Text hinzufuegen ---
     st.subheader("Text hinzufuegen")
     st.caption(
-        "Kopiere einen Text (z.B. aus einem ADAC-Artikel oder KBA-Rueckruf) "
-        "hier rein. Er wird automatisch aufbereitet und in die Wissensbasis gespeichert."
+        "Kopiere einen Text rein, oder nutze den URL-Import oben. "
+        "Der Text wird automatisch aufbereitet und in die Wissensbasis gespeichert."
     )
+
+    # Wenn Text per URL extrahiert wurde, diesen als Default anzeigen
+    default_text = st.session_state.get("url_extracted_text", "")
+    default_quelle = st.session_state.get("url_title", "")
 
     text_input = st.text_area(
         "Text",
+        value=default_text,
         height=200,
         placeholder="Mindestens 50 Zeichen. Z.B. einen Absatz aus einem Testbericht...",
         key="ingest_text",
@@ -351,6 +413,7 @@ with tab_wissen:
 
     text_quelle = st.text_input(
         "Quelle (optional)",
+        value=default_quelle,
         placeholder="z.B. ADAC Test 2024",
         key="text_quelle",
     )

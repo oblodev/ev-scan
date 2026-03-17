@@ -20,7 +20,10 @@ import hashlib
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pypdf import PdfReader
 
+from pydantic import BaseModel, Field
+
 from app.core.chunking import chunk_documents
+from app.core.url_scraper import extract_text_from_url
 from app.core.vector_store import VectorStore
 from app.models.schemas import IngestResponse, IngestTextRequest, KnowledgeStats
 
@@ -103,6 +106,43 @@ def _ingest_text(
         kategorie,
     )
     return len(chunks)
+
+
+class UrlExtractRequest(BaseModel):
+    """Anfrage zum Extrahieren von Text aus einer URL."""
+    url: str = Field(..., description="Die URL der Webseite", min_length=10)
+
+
+class UrlExtractResponse(BaseModel):
+    """Antwort mit dem extrahierten Text."""
+    title: str = Field(..., description="Seitentitel")
+    extracted_text: str = Field(..., description="Extrahierter Haupttext")
+    char_count: int = Field(..., description="Anzahl Zeichen", ge=0)
+
+
+@router.post("/ingest/url", response_model=UrlExtractResponse)
+async def extract_url_text(request: UrlExtractRequest) -> UrlExtractResponse:
+    """Laedt eine Webseite und extrahiert den Haupttext.
+
+    Der Text wird NICHT automatisch gespeichert – er wird dem User
+    zur Pruefung zurueckgegeben. Der User kann ihn dann bearbeiten
+    und ueber /ingest/text in die Wissensbasis einfuegen.
+
+    Warum nicht automatisch speichern?
+    Webseiten enthalten oft irrelevanten Text (Werbung, Navigation).
+    Ein Mensch soll pruefen ob der Text brauchbar ist.
+    """
+    logger.info("URL-Extraktion: %s", request.url)
+
+    try:
+        result = extract_text_from_url(request.url)
+        return UrlExtractResponse(
+            title=result["title"],
+            extracted_text=result["extracted_text"],
+            char_count=result["char_count"],
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 @router.post("/ingest/text", response_model=IngestResponse)

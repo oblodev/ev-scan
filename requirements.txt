@@ -7,5 +7,7 @@ python-multipart
 pypdf
 streamlit
 httpx
+beautifulsoup4
+lxml
 pandas
 pytest
