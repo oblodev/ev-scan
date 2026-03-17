@@ -394,16 +394,23 @@ with tab_wissen:
             key="text_kat",
         )
     with col_t2:
-        # Vorhandene Modelle + Option fuer neues Modell
-        modell_optionen = vorhandene_modelle + ["-- Neues Modell --"]
+        # "Automatisch erkennen" als erste Option: Teilt den Text
+        # anhand der erwahnten Modellnamen automatisch auf
+        modell_optionen = (
+            ["-- Automatisch erkennen --"]
+            + vorhandene_modelle
+            + ["-- Neues Modell --"]
+        )
         text_modell_auswahl = st.selectbox(
             "Modell",
-            options=modell_optionen if modell_optionen else ["-- Neues Modell --"],
+            options=modell_optionen,
             key="text_modell",
+            help="'Automatisch erkennen' teilt den Text anhand der erwahnten Modelle auf",
         )
 
-    # Wenn "Neues Modell" gewaehlt, Textfeld anzeigen
-    if text_modell_auswahl == "-- Neues Modell --":
+    if text_modell_auswahl == "-- Automatisch erkennen --":
+        text_modell = "auto"
+    elif text_modell_auswahl == "-- Neues Modell --":
         text_modell = st.text_input(
             "Neuer Modellname",
             placeholder="z.B. Renault Zoe",

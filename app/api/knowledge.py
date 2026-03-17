@@ -23,6 +23,7 @@ from pypdf import PdfReader
 from pydantic import BaseModel, Field
 
 from app.core.chunking import chunk_documents
+from app.core.text_splitter import split_text_by_models
 from app.core.url_scraper import extract_text_from_url
 from app.core.vector_store import VectorStore
 from app.models.schemas import IngestResponse, IngestTextRequest, KnowledgeStats
@@ -149,9 +150,10 @@ async def extract_url_text(request: UrlExtractRequest) -> UrlExtractResponse:
 async def ingest_text(request: IngestTextRequest) -> IngestResponse:
     """Fuegt einen Text in die Wissensbasis ein.
 
-    Der Text wird gechunkt, mit Metadaten versehen, embeddet
-    und in ChromaDB gespeichert. Doppelte Texte werden durch
-    Content-Hashing in der ID erkannt und ueberschrieben (upsert).
+    Wenn modell="auto", wird der Text automatisch anhand der erwahnten
+    Modellnamen aufgeteilt und jedem Modell separat zugeordnet.
+    Z.B. ein Artikel der Model 3 und Model S Probleme mischt,
+    wird in zwei Teile gesplittet.
     """
     logger.info(
         "Text-Ingest: modell=%s, kategorie=%s, %d Zeichen",
@@ -161,6 +163,39 @@ async def ingest_text(request: IngestTextRequest) -> IngestResponse:
     )
 
     try:
+        # Automatische Modell-Erkennung und Aufteilung
+        if request.modell.lower() == "auto":
+            splits = split_text_by_models(request.text)
+
+            if not splits:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Kein Fahrzeugmodell im Text erkannt.",
+                )
+
+            total_chunks = 0
+            modelle_gefunden: list[str] = []
+
+            for split in splits:
+                chunks = _ingest_text(
+                    text=split["text"],
+                    kategorie=request.kategorie,
+                    modell=split["modell"],
+                    quelle=request.quelle,
+                )
+                total_chunks += chunks
+                if split["modell"] not in modelle_gefunden:
+                    modelle_gefunden.append(split["modell"])
+
+            logger.info(
+                "Auto-Split: %d Chunks fuer %d Modelle (%s)",
+                total_chunks,
+                len(modelle_gefunden),
+                ", ".join(modelle_gefunden),
+            )
+            return IngestResponse(status="ok", chunks_added=total_chunks)
+
+        # Normaler Ingest (ein Modell)
         chunks_added = _ingest_text(
             text=request.text,
             kategorie=request.kategorie,
