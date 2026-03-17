@@ -4,7 +4,6 @@ EV-Scan ist ein RAG-basierter Kaufberater fuer gebrauchte Elektroautos im DACH-R
 
 ## Demo
 
-> Screenshot hier einfuegen: `frontend/screenshots/demo.png`
 
 ```
 Eingabe:  Tesla Model 3 | Baujahr 2020 | 75.000 km
