@@ -12,14 +12,18 @@
 
 from __future__ import annotations
 
+import os
+
 import httpx
 import streamlit as st
 
 # === Konfiguration ===
 
 # URL des FastAPI-Backends
-# Muss zum Port passen auf dem das Backend laeuft
-API_BASE_URL = "http://localhost:8000/api/v1"
+# Per Umgebungsvariable konfigurierbar (wichtig fuer Docker,
+# wo das Backend nicht unter localhost erreichbar ist sondern
+# ueber den Container-Namen "api")
+API_BASE_URL = os.environ.get("API_URL", "http://localhost:8000") + "/api/v1"
 
 # Farben fuer die Risikobewertung
 RISIKO_FARBEN = {

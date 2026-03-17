@@ -1,0 +1,130 @@
+# === Docker Compose: Orchestriert mehrere Container ===
+#
+# Was ist Docker Compose?
+# -----------------------
+# Ein Tool das mehrere Container gleichzeitig startet und vernetzt.
+# Statt 3x "docker run ..." mit langen Parametern zu tippen,
+# definieren wir alles in dieser YAML-Datei und starten mit:
+#   docker compose up
+#
+# Was ist ein Volume?
+# -------------------
+# Ein Volume ist ein persistenter Speicher fuer Container.
+# Container sind "ephemeral" (kurzlebig) – wenn ein Container gestoppt
+# und geloescht wird, sind alle Daten darin WEG.
+# Volumes ueberleben Container-Neustarts und -Loeschungen.
+# Wir nutzen sie fuer ChromaDB-Daten, damit die Vektoren nicht
+# bei jedem Neustart verloren gehen.
+#
+# Was ist depends_on?
+# -------------------
+# Legt die Startreihenfolge fest. "api depends_on chromadb" bedeutet:
+# Zuerst ChromaDB starten, DANN die API. Sonst wuerde die API
+# versuchen sich zu verbinden bevor ChromaDB bereit ist.
+# ACHTUNG: depends_on wartet nur auf den Container-Start, nicht darauf
+# dass der Service INNERHALB des Containers bereit ist. Deshalb haben
+# wir Error Handling im Code (Retry bei Connection Error).
+#
+# Warum laeuft Ollama NICHT im Container?
+# ----------------------------------------
+# Ollama braucht direkten Zugriff auf die Hardware (CPU/GPU).
+# In einem Container waere der Zugriff eingeschraenkt und langsamer.
+# Ausserdem braucht Ollama viel RAM fuer die Modelle (~4-8 GB fuer Mistral),
+# und Docker hat standardmaessig ein RAM-Limit.
+# Daher laeuft Ollama direkt auf dem Host (dem Lenovo M920q),
+# und die Container greifen ueber host.docker.internal darauf zu.
+#
+# Was ist host.docker.internal?
+# -----------------------------
+# Ein spezieller Hostname den Docker bereitstellt.
+# Er zeigt auf die IP-Adresse des HOST-Rechners.
+# Normalerweise koennen Container den Host nicht direkt erreichen
+# (sie leben in einem eigenen Netzwerk). host.docker.internal
+# ist die Bruecke zurueck zum Host.
+# Beispiel: Im Container ist http://host.docker.internal:11434
+# das gleiche wie http://localhost:11434 auf dem Host.
+
+services:
+
+  # === ChromaDB: Vektordatenbank ===
+  # Laeuft als eigener Container mit dem offiziellen Image.
+  # Speichert die Embeddings und ermoeglicht die Aehnlichkeitssuche.
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      # Host-Port 8080 -> Container-Port 8000
+      # Wir nutzen 8080 auf dem Host, weil 8000 schon von der API belegt ist.
+      # Innerhalb von Docker erreichen andere Container ChromaDB
+      # ueber chromadb:8000 (Container-Name:Container-Port).
+      - "8080:8000"
+    volumes:
+      # Named Volume: Docker verwaltet den Speicherort automatisch.
+      # Die ChromaDB-Daten ueberleben Container-Neustarts.
+      - chroma_data:/chroma/chroma
+    restart: unless-stopped
+
+  # === FastAPI Backend (API) ===
+  # Unsere Haupt-API die Anfragen entgegennimmt.
+  api:
+    build: .
+    ports:
+      # Host-Port 8888 -> Container-Port 8000
+      # Wir nutzen 8888, weil 8000 auf dem Host oft schon belegt ist
+      - "8888:8000"
+    environment:
+      # Ollama laeuft auf dem HOST, nicht im Container.
+      # host.docker.internal ist der Hostname um vom Container
+      # aus den Host zu erreichen.
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+
+      # ChromaDB laeuft als eigener Container (Service "chromadb" oben).
+      # Docker erstellt automatisch ein Netzwerk in dem sich Container
+      # ueber ihren Service-Namen erreichen koennen.
+      # Also: http://chromadb:8000 statt http://localhost:8000
+      - CHROMA_MODE=server
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+    extra_hosts:
+      # Auf Linux muss man host.docker.internal explizit definieren.
+      # host-gateway ist ein Docker-Schluesselwort das zur Host-IP aufgeloest wird.
+      # Auf Mac/Windows funktioniert host.docker.internal automatisch,
+      # aber wir setzen es trotzdem fuer Kompatibilitaet.
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - chromadb
+    volumes:
+      # Daten als Read-Only Volume mounten.
+      # :ro = read-only, der Container kann die Daten nicht veraendern.
+      # Vorteil: Wir koennen die Daten auf dem Host aktualisieren
+      # ohne das Image neu zu bauen.
+      - ./data/processed:/app/data/processed:ro
+    restart: unless-stopped
+
+  # === Streamlit Frontend ===
+  # Die Web-Oberflaeche fuer den User.
+  frontend:
+    build: .
+    # Ueberschreibt den CMD aus dem Dockerfile.
+    # Statt uvicorn starten wir hier Streamlit.
+    command: >
+      streamlit run frontend/app.py
+      --server.port=8501
+      --server.address=0.0.0.0
+      --server.headless=true
+    ports:
+      - "8501:8501"
+    environment:
+      # Das Frontend muss die API ueber den Docker-internen Hostnamen
+      # erreichen, nicht ueber localhost (das waere der eigene Container).
+      - API_URL=http://api:8000
+    depends_on:
+      - api
+    restart: unless-stopped
+
+# === Named Volumes ===
+# Hier deklarieren wir die Volumes die oben referenziert werden.
+# Docker erstellt und verwaltet den Speicherort automatisch.
+# Mit "docker volume ls" kann man sie auflisten,
+# mit "docker volume rm" loeschen.
+volumes:
+  chroma_data:

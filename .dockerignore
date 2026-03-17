@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Lokale ChromaDB-Daten (im Container nutzen wir den Server-Modus)
+chroma_data/
+
+# Umgebung
+venv/
+.venv/
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# OS
+.DS_Store
+
+# Docker (nicht sich selbst kopieren)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Tests und Skripte
+test_loading.py

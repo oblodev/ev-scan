@@ -103,6 +103,6 @@ Hier dokumentieren wir den Fortschritt:
 - [x] Schritt 7: Metadata Filter
 - [x] Schritt 8: RAG Chain
 - [x] Schritt 9: Streamlit Frontend
-- [ ] Schritt 10: Docker
-- [ ] Schritt 11: Tests
+- [x] Schritt 10: Docker
+- [x] Schritt 11: Tests
 - [ ] Schritt 12: README

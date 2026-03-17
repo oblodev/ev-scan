@@ -54,24 +54,36 @@ class VectorStore:
     def __init__(self) -> None:
         """Stellt die Verbindung zu ChromaDB her und laedt/erstellt die Collection.
 
-        ChromaDB laeuft im "persistent" Modus: Die Daten werden auf der
-        Festplatte gespeichert (unter ./chroma_data/) und ueberleben
-        Neustarts. Kein separater Server noetig.
+        Zwei Modi:
+        - "local": PersistentClient, speichert auf Festplatte (Entwicklung)
+        - "server": HttpClient, verbindet sich zu einem ChromaDB-Server (Docker)
 
         Eine "Collection" in ChromaDB ist wie eine Tabelle in SQL:
         Sie speichert Dokumente, Embeddings und Metadaten zusammen.
         get_or_create_collection() erstellt sie beim ersten Mal und
         laedt sie bei jedem weiteren Start.
         """
-        logger.info(
-            "Verbinde mit ChromaDB (persistent: %s)",
-            settings.chroma_persist_dir,
-        )
-
-        # PersistentClient speichert auf Festplatte statt nur im RAM
-        self.client = chromadb.PersistentClient(
-            path=settings.chroma_persist_dir,
-        )
+        if settings.chroma_mode == "server":
+            # Server-Modus: ChromaDB laeuft als eigener Container/Prozess
+            # HttpClient verbindet sich ueber HTTP (wie ein Browser)
+            logger.info(
+                "Verbinde mit ChromaDB-Server: %s:%d",
+                settings.chroma_host,
+                settings.chroma_port,
+            )
+            self.client = chromadb.HttpClient(
+                host=settings.chroma_host,
+                port=settings.chroma_port,
+            )
+        else:
+            # Lokaler Modus: Daten direkt auf der Festplatte
+            logger.info(
+                "Verbinde mit ChromaDB (persistent: %s)",
+                settings.chroma_persist_dir,
+            )
+            self.client = chromadb.PersistentClient(
+                path=settings.chroma_persist_dir,
+            )
 
         # Collection holen oder erstellen
         # cosine = Cosinus-Aehnlichkeit als Distanzmetrik
