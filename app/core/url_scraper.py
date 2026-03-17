@@ -53,7 +53,9 @@ REMOVE_TAGS = {
 
 # CSS-Klassen/IDs die auf Nicht-Content-Bereiche hindeuten
 REMOVE_PATTERNS = re.compile(
-    r"cookie|banner|advert|sidebar|menu|comment|social|share|popup|modal|newsletter|gdpr",
+    r"cookie|banner|advert|sidebar|menu|comment|social|share|popup|modal|newsletter|gdpr"
+    r"|related-post|post-navigation|widget|breadcrumb|author-bio|donation|support-box"
+    r"|cta-box|call-to-action",
     re.IGNORECASE,
 )
 
@@ -271,12 +273,42 @@ def _find_main_content(soup: BeautifulSoup) -> str:
     return ""
 
 
+# Zeilen die auf Sharing, Werbung oder Navigation hindeuten
+_JUNK_LINE_PATTERNS = re.compile(
+    r"^(teilen|share|tweet|pin it|e-mail|drucken|print"
+    r"|vorheriger beitrag|nächster beitrag|previous post|next post"
+    r"|beitrag teilen|passend dazu|weiterlesen|read more"
+    r"|jetzt unterstützen|jetzt spenden|hier klicken"
+    r"|werbung|anzeige|sponsored"
+    r"|als amazon-partner|partner-link"
+    r"|hast du in diesem beitrag"
+    r"|wenn dir .* mehrwert bietet"
+    r"|herzlichen dank"
+    r"|starte hier"
+    r"|bildquelle:"
+    r"|\* in diesem beitrag sind partner).*$",
+    re.IGNORECASE,
+)
+
+# Erkennt den Anfang des Muell-Footers am Ende des Textes
+_FOOTER_START_PATTERNS = re.compile(
+    r"^(beitrag teilen|passend dazu|vorheriger beitrag|nächster beitrag"
+    r"|wenn dir .* mehrwert|hast du in diesem beitrag"
+    r"|du möchtest einen tesla|tesla kaufen\?"
+    r"|du kannst meine arbeit|unterstütze die .+-community"
+    r"|hier geht es zum nächsten beitrag"
+    r"|\* in diesem beitrag sind partner)",
+    re.IGNORECASE,
+)
+
+
 def _clean_text(text: str) -> str:
     """Bereinigt den extrahierten Text.
 
     - Mehrfache Leerzeilen zu einer zusammenfassen
     - Fuehrende/nachfolgende Whitespaces pro Zeile entfernen
     - Sehr kurze Zeilen (< 3 Zeichen) entfernen (oft Artefakte)
+    - Typische Sharing/Werbe/Footer-Zeilen entfernen
     """
     lines = text.split("\n")
 
@@ -284,8 +316,38 @@ def _clean_text(text: str) -> str:
     cleaned: list[str] = []
     for line in lines:
         line = line.strip()
-        if len(line) >= 3:  # Sehr kurze Zeilen ("|", "·") sind meist Artefakte
-            cleaned.append(line)
+        # Zu kurze Zeilen ("|", "·", "—") sind meist Artefakte
+        if len(line) < 3:
+            continue
+        # Typische Muell-Zeilen entfernen
+        if _JUNK_LINE_PATTERNS.match(line):
+            continue
+        cleaned.append(line)
+
+    # Footer-Muell am Ende abschneiden: Ab der ersten Footer-Zeile
+    # ist alles irrelevant (Related Posts, Sharing, Affiliate-Hinweise)
+    cut_index = len(cleaned)
+    for i, line in enumerate(cleaned):
+        if _FOOTER_START_PATTERNS.match(line):
+            cut_index = i
+            break
+    cleaned = cleaned[:cut_index]
+
+    # Navigation am Anfang entfernen: Kurze Zeilen vor dem ersten
+    # langen Absatz sind meist Menue-Links
+    start_index = 0
+    for i, line in enumerate(cleaned):
+        if len(line) > 80:
+            # Erster richtiger Absatz gefunden
+            start_index = i
+            break
+    # Titel-Zeile (direkt vor dem ersten Absatz) behalten
+    if start_index > 0:
+        for j in range(start_index - 1, -1, -1):
+            if len(cleaned[j]) > 20:
+                start_index = j
+                break
+    cleaned = cleaned[start_index:]
 
     # Mehrfache Leerzeilen zusammenfassen
     result = "\n".join(cleaned)
