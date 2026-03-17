@@ -100,9 +100,9 @@ Hier dokumentieren wir den Fortschritt:
 - [x] Schritt 4: FastAPI Grundgerüst
 - [x] Schritt 5: Document Loader + Chunking
 - [x] Schritt 6: Embeddings + ChromaDB
-- [ ] Schritt 7: Metadata Filter
-- [ ] Schritt 8: RAG Chain
-- [ ] Schritt 9: Streamlit Frontend
+- [x] Schritt 7: Metadata Filter
+- [x] Schritt 8: RAG Chain
+- [x] Schritt 9: Streamlit Frontend
 - [ ] Schritt 10: Docker
 - [ ] Schritt 11: Tests
 - [ ] Schritt 12: README

@@ -25,19 +25,20 @@ GET = Daten abfragen (keine Aenderung auf dem Server)
 POST = Daten senden / eine Aktion ausloesen
 """
 
+from __future__ import annotations
+
 import logging
 
 import httpx
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.config import settings
+from app.core.rag_chain import RAGChain
+from app.core.vector_store import VectorStore
 from app.models.schemas import (
     AnalyzeRequest,
     AnalyzeResponse,
     ModelInfo,
-    Quelle,
-    Rueckruf,
-    Schwachstelle,
 )
 
 logger = logging.getLogger(__name__)
@@ -45,6 +46,29 @@ logger = logging.getLogger(__name__)
 # Router-Instanz erstellen
 # tags werden in der Swagger UI als Gruppierung angezeigt
 router = APIRouter(tags=["EV-Scan"])
+
+# RAG Chain und VectorStore werden beim ersten Request initialisiert
+# (Lazy Init), damit die App auch startet wenn Ollama nicht laeuft.
+# Wuerde man sie hier direkt erstellen, muesste Ollama beim App-Start
+# erreichbar sein, was in der Entwicklung laestig ist.
+_rag_chain: RAGChain | None = None
+_vector_store: VectorStore | None = None
+
+
+def _get_rag_chain() -> RAGChain:
+    """Gibt die RAG Chain zurueck (erstellt sie beim ersten Aufruf)."""
+    global _rag_chain
+    if _rag_chain is None:
+        _rag_chain = RAGChain()
+    return _rag_chain
+
+
+def _get_vector_store() -> VectorStore:
+    """Gibt den VectorStore zurueck (erstellt ihn beim ersten Aufruf)."""
+    global _vector_store
+    if _vector_store is None:
+        _vector_store = VectorStore()
+    return _vector_store
 
 
 @router.get("/health")
@@ -82,18 +106,14 @@ async def health_check() -> dict:
 async def analyze_vehicle(request: AnalyzeRequest) -> AnalyzeResponse:
     """Analysiert ein gebrauchtes Elektrofahrzeug.
 
-    Nimmt Modell, Baujahr und km_stand entgegen und gibt eine
-    vollstaendige Analyse zurueck.
+    Nimmt Modell, Baujahr und km_stand entgegen und fuehrt eine
+    RAG-basierte Analyse durch:
+    1. Relevante Chunks aus ChromaDB holen
+    2. Kontext an Mistral uebergeben
+    3. Strukturierte Analyse zurueckgeben
 
-    AKTUELL: Gibt Dummy-Daten zurueck. Wird spaeter mit dem
-    RAG-System verbunden (Schritt 8).
-
-    Was passiert bei @router.post("/analyze")?
-    1. FastAPI empfaengt den POST-Request mit JSON-Body
-    2. Pydantic validiert den Body automatisch gegen AnalyzeRequest
-    3. Bei ungueltigem Input -> automatisch 422 Validation Error
-    4. Bei gueltigem Input -> diese Funktion wird aufgerufen
-    5. Die Rueckgabe wird gegen AnalyzeResponse validiert und als JSON gesendet
+    Bei Fehlern (Ollama down, ChromaDB leer) gibt es eine sinnvolle
+    Fehlermeldung statt eines Crashes.
     """
     logger.info(
         "Analyse-Anfrage: modell=%s, baujahr=%d, km_stand=%d",
@@ -102,69 +122,66 @@ async def analyze_vehicle(request: AnalyzeRequest) -> AnalyzeResponse:
         request.km_stand,
     )
 
-    # === Dummy-Response (wird spaeter durch echte RAG-Analyse ersetzt) ===
-    return AnalyzeResponse(
-        modell=request.modell,
-        baujahr=request.baujahr,
-        km_stand=request.km_stand,
-        risiko_bewertung="gelb",
-        zusammenfassung=(
-            f"Dummy-Analyse fuer {request.modell} ({request.baujahr}, "
-            f"{request.km_stand:,} km). Wird spaeter durch RAG ersetzt."
-        ),
-        rueckrufe=[
-            Rueckruf(
-                beschreibung="[DUMMY] Beispiel-Rueckruf: Software-Update Batteriemanagementsystem",
-                schwere="mittel",
+    try:
+        rag = _get_rag_chain()
+        return rag.analyze(
+            modell=request.modell,
+            baujahr=request.baujahr,
+            km_stand=request.km_stand,
+        )
+    except ConnectionError as e:
+        # Ollama oder ChromaDB nicht erreichbar
+        logger.error("Verbindungsfehler: %s", e)
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Analyse-Service nicht verfuegbar. "
+                "Bitte sicherstellen, dass Ollama laeuft (ollama serve) "
+                "und der Ingest durchgefuehrt wurde (python -m app.core.ingest)."
             ),
-        ],
-        schwachstellen=[
-            Schwachstelle(
-                problem="[DUMMY] Beispiel: Ladegeschwindigkeit nimmt bei hohem km-Stand ab",
-                schwere="niedrig",
-                haeufigkeit="gelegentlich",
-            ),
-        ],
-        checkliste=[
-            "12V-Batterie pruefen",
-            "Ladeanschluss auf Beschaedigungen pruefen",
-            "Batterie-Gesundheit (SoH) auslesen lassen",
-            "Probefahrt: Rekuperation testen",
-            "Alle Rueckrufe beim Haendler abfragen",
-        ],
-        quellen=[
-            Quelle(source="adac", doc_type="testbericht"),
-            Quelle(source="kba", doc_type="rueckruf"),
-        ],
-    )
+        ) from e
+    except Exception as e:
+        logger.error("Unerwarteter Fehler bei Analyse: %s", e, exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail="Interner Fehler bei der Analyse. Bitte spaeter erneut versuchen.",
+        ) from e
 
 
 @router.get("/models", response_model=list[ModelInfo])
 async def get_models() -> list[ModelInfo]:
     """Gibt die verfuegbaren Fahrzeugmodelle in der Wissensbasis zurueck.
 
-    AKTUELL: Hardcoded Liste mit 3 Modellen.
-    Wird spaeter aus ChromaDB geladen.
-
-    response_model=list[ModelInfo] sagt FastAPI:
-    "Die Antwort ist eine Liste von ModelInfo-Objekten."
-    Das erscheint in der Swagger-Doku und wird automatisch validiert.
+    Liest die Modelle aus ChromaDB. Wenn ChromaDB leer oder nicht
+    erreichbar ist, wird eine leere Liste zurueckgegeben.
     """
-    # Dummy-Daten: Die 3 beliebtesten E-Autos im DACH-Raum
-    return [
-        ModelInfo(
-            modell="Tesla Model 3",
-            hersteller="Tesla",
-            docs_count=12,
-        ),
-        ModelInfo(
-            modell="VW ID.3",
-            hersteller="Volkswagen",
-            docs_count=8,
-        ),
-        ModelInfo(
-            modell="Hyundai Ioniq 5",
-            hersteller="Hyundai",
-            docs_count=6,
-        ),
-    ]
+    try:
+        store = _get_vector_store()
+        modelle = store.get_all_models()
+
+        # Fuer jedes Modell zaehlen wir die Chunks in der DB
+        result: list[ModelInfo] = []
+        for modell_name in modelle:
+            # Hersteller aus dem ersten Wort ableiten (vereinfacht)
+            # Bei "VW ID.3" -> "VW", bei "Tesla Model 3" -> "Tesla"
+            hersteller = modell_name.split()[0] if modell_name else "Unbekannt"
+
+            # Chunks fuer dieses Modell zaehlen
+            all_docs = store.collection.get(
+                where={"modell": modell_name},
+                include=[],
+            )
+            docs_count = len(all_docs["ids"])
+
+            result.append(ModelInfo(
+                modell=modell_name,
+                hersteller=hersteller,
+                docs_count=docs_count,
+            ))
+
+        return result
+
+    except Exception as e:
+        logger.error("Fehler beim Laden der Modelle: %s", e)
+        # Leere Liste statt Fehler, damit das Frontend nicht crasht
+        return []
