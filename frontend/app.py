@@ -186,6 +186,28 @@ def extrahiere_url_text(url: str) -> dict | None:
         return None
 
 
+def lade_chunks(
+    modell: str | None = None,
+    kategorie: str | None = None,
+    limit: int = 20,
+    offset: int = 0,
+) -> dict | None:
+    """Laedt Chunks aus der Wissensbasis."""
+    try:
+        params: dict = {"limit": limit, "offset": offset}
+        if modell:
+            params["modell"] = modell
+        if kategorie:
+            params["kategorie"] = kategorie
+        with httpx.Client(timeout=10.0) as client:
+            response = client.get(f"{API_BASE_URL}/knowledge/chunks", params=params)
+        if response.status_code == 200:
+            return response.json()
+    except (httpx.ConnectError, httpx.TimeoutException):
+        pass
+    return None
+
+
 def loesche_modell(modell: str) -> bool:
     """Loescht alle Daten fuer ein Modell."""
     try:
@@ -537,6 +559,76 @@ with tab_wissen:
                 for i, (cat, count) in enumerate(sorted(categories.items())):
                     with cat_cols[i]:
                         st.metric(cat.capitalize(), count)
+
+            st.divider()
+
+            # Chunks-Browser
+            st.subheader("Chunks durchsuchen")
+
+            col_filter1, col_filter2 = st.columns(2)
+            with col_filter1:
+                browse_modell = st.selectbox(
+                    "Nach Modell filtern",
+                    options=["Alle"] + list(models.keys()),
+                    key="browse_modell",
+                )
+            with col_filter2:
+                browse_kat = st.selectbox(
+                    "Nach Kategorie filtern",
+                    options=["Alle"] + list(categories.keys()),
+                    key="browse_kat",
+                )
+
+            # Paginierung
+            if "chunk_page" not in st.session_state:
+                st.session_state["chunk_page"] = 0
+
+            page_size = 10
+            chunk_offset = st.session_state["chunk_page"] * page_size
+
+            chunk_data = lade_chunks(
+                modell=browse_modell if browse_modell != "Alle" else None,
+                kategorie=browse_kat if browse_kat != "Alle" else None,
+                limit=page_size,
+                offset=chunk_offset,
+            )
+
+            if chunk_data and chunk_data["chunks"]:
+                total = chunk_data["total"]
+                total_pages = (total + page_size - 1) // page_size
+                current_page = st.session_state["chunk_page"] + 1
+
+                st.caption(
+                    f"Zeige {chunk_offset + 1}-{min(chunk_offset + page_size, total)} "
+                    f"von {total} Chunks (Seite {current_page}/{total_pages})"
+                )
+
+                for chunk in chunk_data["chunks"]:
+                    meta = chunk["metadata"]
+                    full_len = chunk.get("content_full_length", len(chunk["content"]))
+                    label = (
+                        f"{meta.get('modell', '?')} | "
+                        f"{meta.get('doc_type', '?')} | "
+                        f"{meta.get('source', '?')} | "
+                        f"{full_len} Zeichen"
+                    )
+                    with st.expander(label):
+                        st.text(chunk["content"])
+                        if full_len > 500:
+                            st.caption(f"(gekuerzt, original {full_len} Zeichen)")
+
+                # Paginierungs-Buttons
+                col_prev, col_info, col_next = st.columns([1, 2, 1])
+                with col_prev:
+                    if st.button("Zurueck", key="prev_page", disabled=current_page <= 1):
+                        st.session_state["chunk_page"] -= 1
+                        st.rerun()
+                with col_next:
+                    if st.button("Weiter", key="next_page", disabled=current_page >= total_pages):
+                        st.session_state["chunk_page"] += 1
+                        st.rerun()
+            else:
+                st.info("Keine Chunks fuer diesen Filter gefunden.")
 
             st.divider()
 

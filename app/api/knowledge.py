@@ -16,6 +16,7 @@ import csv
 import io
 import logging
 import hashlib
+from typing import Optional
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pypdf import PdfReader
@@ -289,6 +290,65 @@ async def ingest_file(
             status_code=503,
             detail="Ollama nicht erreichbar.",
         ) from e
+
+
+@router.get("/knowledge/chunks")
+async def get_chunks(
+    modell: Optional[str] = None,
+    kategorie: Optional[str] = None,
+    limit: int = 50,
+    offset: int = 0,
+) -> dict:
+    """Gibt Chunks aus der Wissensbasis zurueck.
+
+    Optional filterbar nach Modell und/oder Kategorie.
+    Paginiert mit limit/offset.
+    """
+    try:
+        store = _get_vector_store()
+
+        # Filter bauen
+        where_filter: dict | None = None
+        conditions: list[dict] = []
+        if modell:
+            conditions.append({"modell": modell})
+        if kategorie:
+            conditions.append({"doc_type": kategorie})
+
+        if len(conditions) == 1:
+            where_filter = conditions[0]
+        elif len(conditions) > 1:
+            where_filter = {"$and": conditions}
+
+        # Chunks holen
+        kwargs: dict = {"include": ["documents", "metadatas"]}
+        if where_filter:
+            kwargs["where"] = where_filter
+
+        all_docs = store.collection.get(**kwargs)
+
+        total = len(all_docs["ids"])
+
+        # Paginierung
+        end = min(offset + limit, total)
+        chunks = []
+        for i in range(offset, end):
+            chunks.append({
+                "id": all_docs["ids"][i],
+                "content": all_docs["documents"][i][:500],  # Gekuerzt fuer Uebersicht
+                "content_full_length": len(all_docs["documents"][i]),
+                "metadata": all_docs["metadatas"][i],
+            })
+
+        return {
+            "total": total,
+            "offset": offset,
+            "limit": limit,
+            "chunks": chunks,
+        }
+    except Exception as e:
+        logger.error("Fehler beim Laden der Chunks: %s", e)
+        return {"total": 0, "offset": 0, "limit": limit, "chunks": []}
 
 
 @router.get("/knowledge/stats", response_model=KnowledgeStats)
