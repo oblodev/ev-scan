@@ -65,7 +65,7 @@ def lade_modelle() -> list[dict]:
 def sende_analyse(modell: str, baujahr: int, km_stand: int) -> dict | None:
     """Schickt eine Analyse-Anfrage an das Backend."""
     try:
-        with httpx.Client(timeout=90.0) as client:
+        with httpx.Client(timeout=300.0) as client:
             response = client.post(
                 f"{API_BASE_URL}/analyze",
                 json={"modell": modell, "baujahr": baujahr, "km_stand": km_stand},
