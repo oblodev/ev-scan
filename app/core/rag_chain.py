@@ -74,35 +74,12 @@ logger = logging.getLogger(__name__)
 # System-Prompt: Definiert die Rolle und Regeln fuer das LLM
 # Das ist der wichtigste Teil des RAG-Systems. Hier steuern wir,
 # WIE das LLM antwortet.
-SYSTEM_PROMPT = """Du bist ein erfahrener KFZ-Gutachter und E-Auto-Experte im DACH-Raum.
-Du beraetest Kaeufer von gebrauchten Elektroautos.
+# Kompakter System-Prompt: Jedes Zeichen zaehlt auf CPU ohne GPU.
+# Kuerzerer Prompt = schnellere Antwort (ca. 150ms pro Token bei Mistral auf CPU).
+SYSTEM_PROMPT = """Du bist ein E-Auto-Experte. Antworte NUR als JSON, KEIN anderer Text.
+Nutze NUR den Kontext unten. Erfinde nichts.
 
-REGELN:
-1. Antworte NUR basierend auf dem bereitgestellten Kontext. Erfinde NICHTS dazu.
-2. Wenn der Kontext keine Information zu einem Punkt enthaelt, sage das ehrlich.
-3. Beruecksichtige Baujahr und Kilometerstand bei der Bewertung.
-4. Antworte NUR als valides JSON im exakten Format unten. KEIN anderer Text.
-
-JSON-FORMAT:
-{
-  "risiko_bewertung": "gruen" oder "gelb" oder "rot",
-  "zusammenfassung": "2-3 Saetze Gesamtbewertung",
-  "rueckrufe": [
-    {"beschreibung": "Was wurde zurueckgerufen", "schwere": "niedrig/mittel/hoch"}
-  ],
-  "schwachstellen": [
-    {"problem": "Problembeschreibung", "schwere": "niedrig/mittel/hoch", "haeufigkeit": "selten/gelegentlich/haeufig"}
-  ],
-  "checkliste": ["Punkt 1", "Punkt 2", "..."],
-  "quellen": [
-    {"source": "z.B. adac, kba", "doc_type": "z.B. rueckruf, testbericht"}
-  ]
-}
-
-BEWERTUNGSKRITERIEN fuer risiko_bewertung:
-- "gruen": Wenige/keine Rueckrufe, ueberschaubare Schwachstellen, guter Gesamtzustand erwartet
-- "gelb": Einige Rueckrufe oder Schwachstellen, bestimmte Punkte muessen geprueft werden
-- "rot": Schwere Rueckrufe, viele Schwachstellen, hohes Risiko bei diesem Baujahr/km-Stand"""
+{"risiko_bewertung":"gruen/gelb/rot","zusammenfassung":"2 Saetze","rueckrufe":[{"beschreibung":"...","schwere":"niedrig/mittel/hoch"}],"schwachstellen":[{"problem":"...","schwere":"niedrig/mittel/hoch","haeufigkeit":"selten/gelegentlich/haeufig"}],"checkliste":["..."],"quellen":[{"source":"...","doc_type":"..."}]}"""
 
 
 class RAGChain:
@@ -277,27 +254,31 @@ class RAGChain:
         """
         sections: list[str] = []
 
+        # Chunks auf max 300 Zeichen kuerzen: Weniger Kontext = schnellere
+        # LLM-Antwort. Auf CPU ohne GPU spart das 30-60 Sekunden.
+        MAX_CHUNK_LEN = 300
+
         if rueckruf_chunks:
-            sections.append("=== RUECKRUFE (KBA) ===")
+            sections.append("RUECKRUFE:")
             for chunk in rueckruf_chunks:
-                sections.append(chunk["content"])
+                sections.append(chunk["content"][:MAX_CHUNK_LEN])
 
         if schwachstellen_chunks:
-            sections.append("\n=== SCHWACHSTELLEN ===")
+            sections.append("SCHWACHSTELLEN:")
             for chunk in schwachstellen_chunks:
-                sections.append(chunk["content"])
+                sections.append(chunk["content"][:MAX_CHUNK_LEN])
 
         if datenblatt_chunks:
-            sections.append("\n=== TECHNISCHE DATEN / EMPFEHLUNGEN ===")
+            sections.append("DATENBLATT:")
             for chunk in datenblatt_chunks:
-                sections.append(chunk["content"])
+                sections.append(chunk["content"][:MAX_CHUNK_LEN])
 
         if allgemein_chunks:
-            sections.append("\n=== WEITERE INFORMATIONEN ===")
+            sections.append("WEITERE INFOS:")
             for chunk in allgemein_chunks:
-                sections.append(chunk["content"])
+                sections.append(chunk["content"][:MAX_CHUNK_LEN])
 
-        return "\n\n".join(sections)
+        return "\n".join(sections)
 
     def _build_prompt(
         self,
