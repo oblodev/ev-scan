@@ -153,9 +153,13 @@ class RAGChain:
 
         # Query a) Rueckrufe: Zuerst spezifisch nach doc_type="rueckruf",
         # falls keine gefunden -> allgemeine Suche nur nach Modell
+        # n_results bewusst niedrig halten (3 statt 5):
+        # Mistral auf CPU braucht pro 1000 Zeichen Kontext ~15-20s.
+        # Bei 10 Chunks a 500 Zeichen = 5000 Zeichen -> 75-100s.
+        # Bei 7 Chunks a 500 Zeichen = 3500 Zeichen -> 50-70s.
         rueckruf_chunks = self._safe_query(
             query_text=f"Rueckruf Rueckrufaktion {modell}",
-            n_results=5,
+            n_results=3,
             where_filter={"$and": [
                 {"modell": modell},
                 {"doc_type": "rueckruf"},
@@ -163,10 +167,10 @@ class RAGChain:
         )
         logger.info("Rueckruf-Chunks gefunden: %d", len(rueckruf_chunks))
 
-        # Query b) Schwachstellen: Zuerst spezifisch, dann breit
+        # Query b) Schwachstellen
         schwachstellen_chunks = self._safe_query(
             query_text=f"Probleme Schwachstellen Maengel {modell}",
-            n_results=5,
+            n_results=3,
             where_filter={"$and": [
                 {"modell": modell},
                 {"doc_type": "schwachstelle"},
@@ -177,7 +181,7 @@ class RAGChain:
         # Query c) Datenblatt
         datenblatt_chunks = self._safe_query(
             query_text=f"{modell} technische Daten Batterie Empfehlung",
-            n_results=2,
+            n_results=1,
             where_filter={"$and": [
                 {"modell": modell},
                 {"doc_type": "datenblatt"},
@@ -185,14 +189,10 @@ class RAGChain:
         )
         logger.info("Datenblatt-Chunks gefunden: %d", len(datenblatt_chunks))
 
-        # Query d) Allgemeine Suche: Fuer alle anderen Kategorien
-        # (testbericht, manuell hinzugefuegte Texte, etc.)
-        # Diese Query faengt alles auf was nicht in a/b/c gefunden wurde.
-        # Wir filtern nur nach Modell, nicht nach doc_type.
-        # Damit werden auch Testberichte und manuell hinzugefuegte Texte gefunden.
+        # Query d) Allgemeine Suche (testbericht, manuell, etc.)
         allgemein_chunks = self._safe_query(
             query_text=f"{modell} Probleme Schwachstellen Rueckruf Erfahrung",
-            n_results=5,
+            n_results=3,
             where_filter={"modell": modell},
         )
         # Duplikate entfernen: Chunks die schon in a/b/c gefunden wurden
@@ -336,10 +336,9 @@ class RAGChain:
         logger.info("Sende Prompt an Mistral (%d Zeichen) ...", len(prompt))
 
         try:
-            # 180s Timeout: Mistral auf dem Lenovo M920q (CPU only, 16 GB RAM)
-            # braucht je nach Kontext-Laenge 30-120s fuer eine Analyse.
-            # Bei langen Kontexten (viele Chunks) kann es laenger dauern.
-            with httpx.Client(timeout=180.0) as client:
+            # 300s Timeout: Mistral auf dem Lenovo M920q (CPU only, 16 GB RAM)
+            # braucht je nach Kontext-Laenge 60-180s fuer eine Analyse.
+            with httpx.Client(timeout=300.0) as client:
                 response = client.post(
                     f"{settings.ollama_base_url}/api/generate",
                     json={
@@ -372,7 +371,7 @@ class RAGChain:
             )
             return None
         except httpx.TimeoutException:
-            logger.error("LLM-Timeout (>180s) - Antwort zu langsam")
+            logger.error("LLM-Timeout (>300s) - Antwort zu langsam")
             return None
 
     def _parse_response(
