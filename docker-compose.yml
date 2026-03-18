@@ -60,7 +60,7 @@ services:
     volumes:
       # Named Volume: Docker verwaltet den Speicherort automatisch.
       # Die ChromaDB-Daten ueberleben Container-Neustarts.
-      - chroma_data:/chroma/chroma
+      - chroma_data:/data
     restart: unless-stopped
 
   # === FastAPI Backend (API) ===
