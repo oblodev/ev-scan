@@ -336,9 +336,10 @@ class RAGChain:
         logger.info("Sende Prompt an Mistral (%d Zeichen) ...", len(prompt))
 
         try:
-            # 60s Timeout: Mistral auf dem Lenovo M920q (CPU only)
-            # braucht ca. 15-30s fuer eine vollstaendige Analyse
-            with httpx.Client(timeout=60.0) as client:
+            # 180s Timeout: Mistral auf dem Lenovo M920q (CPU only, 16 GB RAM)
+            # braucht je nach Kontext-Laenge 30-120s fuer eine Analyse.
+            # Bei langen Kontexten (viele Chunks) kann es laenger dauern.
+            with httpx.Client(timeout=180.0) as client:
                 response = client.post(
                     f"{settings.ollama_base_url}/api/generate",
                     json={
@@ -371,7 +372,7 @@ class RAGChain:
             )
             return None
         except httpx.TimeoutException:
-            logger.error("LLM-Timeout (>60s) - Antwort zu langsam")
+            logger.error("LLM-Timeout (>180s) - Antwort zu langsam")
             return None
 
     def _parse_response(

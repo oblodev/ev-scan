@@ -240,7 +240,7 @@ with tab_analyse:
         )
 
     if st.button("Analysieren", type="primary", use_container_width=True):
-        with st.spinner("Analysiere... (kann bis zu 30 Sekunden dauern auf CPU)"):
+        with st.spinner("Analysiere... (kann bis zu 2 Minuten dauern auf CPU)"):
             ergebnis = sende_analyse(modell, baujahr, km_stand)
 
         if ergebnis:
