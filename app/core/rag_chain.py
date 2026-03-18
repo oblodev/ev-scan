@@ -151,8 +151,8 @@ class RAGChain:
         # gezielt die besten Chunks brauchen (siehe Modul-Docstring oben)
         modell_filter = {"modell": modell}
 
-        # Query a) Rueckrufe: Nutzt einen kombinierten Filter
-        # $and verknuepft mehrere Bedingungen (Modell UND Dokumenttyp)
+        # Query a) Rueckrufe: Zuerst spezifisch nach doc_type="rueckruf",
+        # falls keine gefunden -> allgemeine Suche nur nach Modell
         rueckruf_chunks = self._safe_query(
             query_text=f"Rueckruf Rueckrufaktion {modell}",
             n_results=5,
@@ -163,7 +163,7 @@ class RAGChain:
         )
         logger.info("Rueckruf-Chunks gefunden: %d", len(rueckruf_chunks))
 
-        # Query b) Schwachstellen
+        # Query b) Schwachstellen: Zuerst spezifisch, dann breit
         schwachstellen_chunks = self._safe_query(
             query_text=f"Probleme Schwachstellen Maengel {modell}",
             n_results=5,
@@ -174,7 +174,7 @@ class RAGChain:
         )
         logger.info("Schwachstellen-Chunks gefunden: %d", len(schwachstellen_chunks))
 
-        # Query c) Datenblatt: Technische Daten, Staerken, Kaufempfehlung
+        # Query c) Datenblatt
         datenblatt_chunks = self._safe_query(
             query_text=f"{modell} technische Daten Batterie Empfehlung",
             n_results=2,
@@ -185,8 +185,28 @@ class RAGChain:
         )
         logger.info("Datenblatt-Chunks gefunden: %d", len(datenblatt_chunks))
 
+        # Query d) Allgemeine Suche: Fuer alle anderen Kategorien
+        # (testbericht, manuell hinzugefuegte Texte, etc.)
+        # Diese Query faengt alles auf was nicht in a/b/c gefunden wurde.
+        # Wir filtern nur nach Modell, nicht nach doc_type.
+        # Damit werden auch Testberichte und manuell hinzugefuegte Texte gefunden.
+        allgemein_chunks = self._safe_query(
+            query_text=f"{modell} Probleme Schwachstellen Rueckruf Erfahrung",
+            n_results=5,
+            where_filter={"modell": modell},
+        )
+        # Duplikate entfernen: Chunks die schon in a/b/c gefunden wurden
+        existing_ids = {
+            c["id"] for c in rueckruf_chunks + schwachstellen_chunks + datenblatt_chunks
+        }
+        allgemein_chunks = [c for c in allgemein_chunks if c["id"] not in existing_ids]
+        logger.info("Allgemein-Chunks gefunden (nach Dedup): %d", len(allgemein_chunks))
+
         # === Schritt 2: Kontext-String zusammenbauen ===
-        all_chunks = rueckruf_chunks + schwachstellen_chunks + datenblatt_chunks
+        all_chunks = (
+            rueckruf_chunks + schwachstellen_chunks
+            + datenblatt_chunks + allgemein_chunks
+        )
 
         # Was passiert wenn KEINE Chunks gefunden werden?
         # Das bedeutet: Das Modell ist nicht in unserer Wissensbasis.
@@ -199,6 +219,7 @@ class RAGChain:
             rueckruf_chunks,
             schwachstellen_chunks,
             datenblatt_chunks,
+            allgemein_chunks,
         )
 
         # Quellen sammeln (fuer die Response)
@@ -247,6 +268,7 @@ class RAGChain:
         rueckruf_chunks: list[dict],
         schwachstellen_chunks: list[dict],
         datenblatt_chunks: list[dict],
+        allgemein_chunks: list[dict] | None = None,
     ) -> str:
         """Baut den Kontext-String fuer den LLM-Prompt.
 
@@ -268,6 +290,11 @@ class RAGChain:
         if datenblatt_chunks:
             sections.append("\n=== TECHNISCHE DATEN / EMPFEHLUNGEN ===")
             for chunk in datenblatt_chunks:
+                sections.append(chunk["content"])
+
+        if allgemein_chunks:
+            sections.append("\n=== WEITERE INFORMATIONEN ===")
+            for chunk in allgemein_chunks:
                 sections.append(chunk["content"])
 
         return "\n\n".join(sections)
